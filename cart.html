@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ZERVO | Shopping Cart</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md px-6 py-5 flex justify-between items-center">
+
+        <h1 class="text-3xl font-bold tracking-widest text-black">
+            ZERVO
+        </h1>
+
+        <!-- Cart Button -->
+        <button onclick="openCart()" class="relative text-2xl">
+            🛍️
+
+            <span id="cartCount"
+                class="absolute -top-2 -right-3 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                0
+            </span>
+        </button>
+
+    </nav>
+
+
+    <!-- Products -->
+    <section class="max-w-6xl mx-auto px-6 py-12">
+
+        <h2 class="text-3xl font-bold mb-8 text-center">
+            Our Collection
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Product 1 -->
+            <div class="bg-white p-4 rounded-xl shadow">
+
+                <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600"
+                    class="w-full h-72 object-cover rounded-lg">
+
+                <h3 class="text-xl font-semibold mt-4">
+                    ZERVO Classic Shirt
+                </h3>
+
+                <p class="text-gray-600 mt-2">Rs. 2,500</p>
+
+                <button onclick="addToCart(1)"
+                    class="w-full bg-black text-white py-3 mt-4 rounded-lg hover:bg-gray-700">
+                    Add To Cart
+                </button>
+
+            </div>
+
+
+            <!-- Product 2 -->
+            <div class="bg-white p-4 rounded-xl shadow">
+
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600"
+                    class="w-full h-72 object-cover rounded-lg">
+
+                <h3 class="text-xl font-semibold mt-4">
+                    ZERVO Luxury Outfit
+                </h3>
+
+                <p class="text-gray-600 mt-2">Rs. 4,500</p>
+
+                <button onclick="addToCart(2)"
+                    class="w-full bg-black text-white py-3 mt-4 rounded-lg hover:bg-gray-700">
+                    Add To Cart
+                </button>
+
+            </div>
+
+
+            <!-- Product 3 -->
+            <div class="bg-white p-4 rounded-xl shadow">
+
+                <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600"
+                    class="w-full h-72 object-cover rounded-lg">
+
+                <h3 class="text-xl font-semibold mt-4">
+                    ZERVO Fashion Wear
+                </h3>
+
+                <p class="text-gray-600 mt-2">Rs. 3,500</p>
+
+                <button onclick="addToCart(3)"
+                    class="w-full bg-black text-white py-3 mt-4 rounded-lg hover:bg-gray-700">
+                    Add To Cart
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Overlay -->
+    <div id="overlay"
+        onclick="closeCart()"
+        class="fixed inset-0 bg-black/50 z-40 hidden">
+    </div>
+
+
+    <!-- Sliding Cart -->
+    <div id="cart"
+        class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 translate-x-full transition-transform duration-500 flex flex-col">
+
+        <!-- Cart Header -->
+        <div class="flex justify-between items-center p-6 border-b">
+
+            <h2 class="text-2xl font-bold">
+                Your Cart
+            </h2>
+
+            <button onclick="closeCart()"
+                class="text-3xl hover:text-gray-500">
+                &times;
+            </button>
+
+        </div>
+
+
+        <!-- Cart Products -->
+        <div id="cartItems" class="flex-1 overflow-y-auto p-5">
+
+            <p class="text-center text-gray-500 mt-10">
+                Your cart is empty.
+            </p>
+
+        </div>
+
+
+        <!-- Cart Footer -->
+        <div class="border-t p-6">
+
+            <div class="flex justify-between text-lg font-semibold mb-5">
+
+                <span>Subtotal:</span>
+
+                <span id="totalPrice">Rs. 0</span>
+
+            </div>
+
+            <button onclick="checkout()"
+                class="w-full bg-black text-white py-4 rounded-lg hover:bg-gray-800">
+                PROCEED TO CHECKOUT
+            </button>
+
+            <button onclick="closeCart()"
+                class="w-full text-center mt-4 text-gray-600 hover:text-black">
+                Continue Shopping
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+
+        var products = [
+            {
+                id: 1,
+                name: "ZERVO Classic Shirt",
+                price: 2500,
+                image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600"
+            },
+
+            {
+                id: 2,
+                name: "ZERVO Luxury Outfit",
+                price: 4500,
+                image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600"
+            },
+
+            {
+                id: 3,
+                name: "ZERVO Fashion Wear",
+                price: 3500,
+                image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600"
+            }
+        ];
+
+
+        var cart = [];
+
+
+        // Open Cart
+        function openCart() {
+
+            document.querySelector("#cart").classList.remove("translate-x-full");
+
+            document.querySelector("#overlay").classList.remove("hidden");
+
+        }
+
+
+        // Close Cart
+        function closeCart() {
+
+            document.querySelector("#cart").classList.add("translate-x-full");
+
+            document.querySelector("#overlay").classList.add("hidden");
+
+        }
+
+
+        // Add To Cart
+        function addToCart(id) {
+
+            var product = products.find(function(item) {
+                return item.id === id;
+            });
+
+            var existingProduct = cart.find(function(item) {
+                return item.id === id;
+            });
+
+            if (existingProduct) {
+
+                existingProduct.quantity++;
+
+            } else {
+
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+
+            }
+
+            updateCart();
+
+            openCart();
+
+        }
+
+
+        // Update Cart
+        function updateCart() {
+
+            var cartItems = document.querySelector("#cartItems");
+
+            cartItems.innerHTML = "";
+
+            var total = 0;
+
+            var count = 0;
+
+
+            if (cart.length === 0) {
+
+                cartItems.innerHTML = `
+                    <p class="text-center text-gray-500 mt-10">
+                        Your cart is empty.
+                    </p>
+                `;
+
+            }
+
+
+            for (var i = 0; i < cart.length; i++) {
+
+                var item = cart[i];
+
+                total += item.price * item.quantity;
+
+                count += item.quantity;
+
+
+                var productDiv = document.createElement("div");
+
+                productDiv.className = "flex gap-4 mb-6 border-b pb-5";
+
+
+                productDiv.innerHTML = `
+
+                    <img src="${item.image}"
+                        class="w-24 h-28 object-cover rounded-lg">
+
+                    <div class="flex-1">
+
+                        <h3 class="font-semibold">
+                            ${item.name}
+                        </h3>
+
+                        <p class="text-gray-600 mt-2">
+                            Rs. ${item.price.toLocaleString()}
+                        </p>
+
+                        <div class="flex items-center gap-3 mt-3">
+
+                            <button onclick="changeQuantity(${item.id}, -1)"
+                                class="border px-3 py-1">
+                                -
+                            </button>
+
+                            <span>${item.quantity}</span>
+
+                            <button onclick="changeQuantity(${item.id}, 1)"
+                                class="border px-3 py-1">
+                                +
+                            </button>
+
+                        </div>
+
+                        <button onclick="removeItem(${item.id})"
+                            class="text-red-500 text-sm mt-3">
+                            Remove
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                cartItems.appendChild(productDiv);
+
+            }
+
+
+            document.querySelector("#totalPrice").innerText =
+                "Rs. " + total.toLocaleString();
+
+            document.querySelector("#cartCount").innerText = count;
+
+        }
+
+
+        // Change Quantity
+        function changeQuantity(id, change) {
+
+            var item = cart.find(function(product) {
+                return product.id === id;
+            });
+
+            if (item) {
+
+                item.quantity += change;
+
+                if (item.quantity <= 0) {
+
+                    removeItem(id);
+
+                } else {
+
+                    updateCart();
+
+                }
+
+            }
+
+        }
+
+
+        // Remove Product
+        function removeItem(id) {
+
+            cart = cart.filter(function(item) {
+                return item.id !== id;
+            });
+
+            updateCart();
+
+        }
+
+
+        // Checkout
+        function checkout() {
+
+            if (cart.length === 0) {
+
+                alert("Your cart is empty!");
+
+            } else {
+
+                alert("Thank you for shopping with ZERVO!");
+
+            }
+
+        }
+
+
+        updateCart();
+
+    </script>
+
+</body>
+</html>
